@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"app-template/backend/internal/httpapp/middleware"
+	"demovueapp/backend/internal/httpapp/middleware"
 )
 
 func (s *Server) Router() http.Handler {

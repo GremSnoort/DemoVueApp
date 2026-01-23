@@ -3,7 +3,9 @@ package repo
 import (
 	"context"
 	"encoding/json"
+	"errors"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -63,8 +65,11 @@ func (r *RequestsRepo) ListByUser(ctx context.Context, userID string) ([]Request
 func (r *RequestsRepo) BelongsToUser(ctx context.Context, requestID, userID string) (bool, error) {
 	var x int
 	err := r.pool.QueryRow(ctx, `SELECT 1 FROM requests WHERE id=$1 AND user_id=$2`, requestID, userID).Scan(&x)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
 		return false, nil
+	}
+	if err != nil {
+		return false, err
 	}
 	return true, nil
 }

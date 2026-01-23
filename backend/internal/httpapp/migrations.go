@@ -10,6 +10,7 @@ import (
 )
 
 func ApplyMigrations(ctx context.Context, pool *pgxpool.Pool, dir string) error {
+	// @TODO sort
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return fmt.Errorf("read migrations dir: %w", err)

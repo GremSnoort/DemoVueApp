@@ -3,8 +3,8 @@ package httpapp
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"app-template/backend/internal/auth"
-	"app-template/backend/internal/repo"
+	"demovueapp/backend/internal/auth"
+	"demovueapp/backend/internal/repo"
 )
 
 type Server struct {

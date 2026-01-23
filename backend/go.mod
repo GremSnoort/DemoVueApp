@@ -1,4 +1,4 @@
-module app-template/backend
+module demovueapp/backend
 
 go 1.22.2
 

@@ -8,9 +8,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"app-template/backend/internal/auth"
-	"app-template/backend/internal/httpapp/middleware"
-	"app-template/backend/internal/repo"
+	"demovueapp/backend/internal/auth"
+	"demovueapp/backend/internal/httpapp/middleware"
+	"demovueapp/backend/internal/repo"
 )
 
 var (
@@ -26,6 +26,12 @@ func writeJSON(w http.ResponseWriter, code int, v any) {
 	_ = json.NewEncoder(w).Encode(v)
 }
 
+func writeErrorJSON(w http.ResponseWriter, code int, msg string) {
+	writeJSON(w, code, map[string]any{
+		"error": msg,
+	})
+}
+
 // ---------- AUTH ----------
 
 func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +44,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	var body req
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad json", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "bad json")
 		return
 	}
 
@@ -48,39 +54,39 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	body.Email = strings.TrimSpace(body.Email)
 
 	if !reLogin.MatchString(body.Login) {
-		http.Error(w, "login must be latin letters/digits, min 6", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "login must be latin letters/digits, min 6")
 		return
 	}
 	if len(body.Password) < 8 {
-		http.Error(w, "password min length is 8", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "password min length is 8")
 		return
 	}
 	if !reFullName.MatchString(body.FullName) {
-		http.Error(w, "full_name must be cyrillic letters and spaces", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "full_name must be cyrillic letters and spaces")
 		return
 	}
 	if !rePhone.MatchString(body.Phone) {
-		http.Error(w, "phone must match 8(XXX)XXX-XX-XX", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "phone must match 8(XXX)XXX-XX-XX")
 		return
 	}
 	if !reEmail.MatchString(body.Email) {
-		http.Error(w, "invalid email", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "invalid email")
 		return
 	}
 
 	exists, err := s.users.ExistsByLogin(r.Context(), body.Login)
 	if err != nil {
-		http.Error(w, "db error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "db error")
 		return
 	}
 	if exists {
-		http.Error(w, "login already exists", http.StatusConflict)
+		writeErrorJSON(w, http.StatusConflict, "login already exists")
 		return
 	}
 
 	hash, err := auth.HashPassword(body.Password)
 	if err != nil {
-		http.Error(w, "hash error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "hash error")
 		return
 	}
 
@@ -93,7 +99,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		Role:         "user",
 	})
 	if err != nil {
-		http.Error(w, "create error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "create error")
 		return
 	}
 
@@ -109,29 +115,29 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	var body req
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad json", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "bad json")
 		return
 	}
 
 	body.Login = strings.TrimSpace(body.Login)
 	if body.Login == "" || body.Password == "" {
-		http.Error(w, "login and password required", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "login and password required")
 		return
 	}
 
 	u, err := s.users.GetByLogin(r.Context(), body.Login)
 	if err != nil {
-		http.Error(w, "invalid login or password", http.StatusUnauthorized)
+		writeErrorJSON(w, http.StatusUnauthorized, "invalid login or password")
 		return
 	}
 	if !auth.CheckPassword(u.PasswordHash, body.Password) {
-		http.Error(w, "invalid login or password", http.StatusUnauthorized)
+		writeErrorJSON(w, http.StatusUnauthorized, "invalid login or password")
 		return
 	}
 
 	token, err := s.jwt.Sign(u.ID, u.Login, u.Role)
 	if err != nil {
-		http.Error(w, "token error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "token error")
 		return
 	}
 
@@ -144,13 +150,13 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 func (s *Server) Me(w http.ResponseWriter, r *http.Request) {
 	userID, _ := r.Context().Value(middleware.CtxUserID).(string)
 	if userID == "" {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		writeErrorJSON(w, http.StatusUnauthorized, "unauthorized")
 		return
 	}
 
 	u, err := s.users.GetByID(r.Context(), userID)
 	if err != nil {
-		http.Error(w, "not found", http.StatusNotFound)
+		writeErrorJSON(w, http.StatusNotFound, "not found")
 		return
 	}
 
@@ -170,12 +176,12 @@ func (s *Server) CreateRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	var body req
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad json", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "bad json")
 		return
 	}
 	body.Type = strings.TrimSpace(body.Type)
 	if body.Type == "" {
-		http.Error(w, "type required", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "type required")
 		return
 	}
 	if len(body.Payload) == 0 {
@@ -184,7 +190,7 @@ func (s *Server) CreateRequest(w http.ResponseWriter, r *http.Request) {
 
 	rr, err := s.requests.Create(r.Context(), userID, body.Type, body.Payload)
 	if err != nil {
-		http.Error(w, "db error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "db error")
 		return
 	}
 
@@ -196,7 +202,7 @@ func (s *Server) ListMyRequests(w http.ResponseWriter, r *http.Request) {
 
 	items, err := s.requests.ListByUser(r.Context(), userID)
 	if err != nil {
-		http.Error(w, "db error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "db error")
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"items": items})
@@ -209,8 +215,12 @@ func (s *Server) CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	requestID := chi.URLParam(r, "id")
 
 	ok, err := s.requests.BelongsToUser(r.Context(), requestID, userID)
-	if err != nil || !ok {
-		http.Error(w, "forbidden", http.StatusForbidden)
+	if err != nil {
+		writeErrorJSON(w, http.StatusInternalServerError, "db error")
+		return
+	}
+	if !ok {
+		writeErrorJSON(w, http.StatusForbidden, "forbidden")
 		return
 	}
 
@@ -220,17 +230,17 @@ func (s *Server) CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 	var body req
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad json", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "bad json")
 		return
 	}
 	if body.Rating < 1 || body.Rating > 5 {
-		http.Error(w, "rating must be 1..5", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "rating must be 1..5")
 		return
 	}
 
 	f, err := s.feedback.Create(r.Context(), requestID, userID, body.Rating, body.Comment)
 	if err != nil {
-		http.Error(w, "db error (maybe feedback already exists)", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "db error (maybe feedback already exists)")
 		return
 	}
 	writeJSON(w, http.StatusCreated, f)
@@ -241,7 +251,7 @@ func (s *Server) CreateFeedback(w http.ResponseWriter, r *http.Request) {
 func (s *Server) AdminListAllRequests(w http.ResponseWriter, r *http.Request) {
 	items, err := s.admin.ListAll(r.Context())
 	if err != nil {
-		http.Error(w, "db error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "db error")
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"items": items})
@@ -256,7 +266,7 @@ func (s *Server) AdminUpdateRequestStatus(w http.ResponseWriter, r *http.Request
 	}
 	var body req
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad json", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "bad json")
 		return
 	}
 
@@ -264,12 +274,12 @@ func (s *Server) AdminUpdateRequestStatus(w http.ResponseWriter, r *http.Request
 	switch body.Status {
 	case "new", "in_progress", "approved", "rejected", "done":
 	default:
-		http.Error(w, "invalid status", http.StatusBadRequest)
+		writeErrorJSON(w, http.StatusBadRequest, "invalid status")
 		return
 	}
 
 	if err := s.admin.UpdateStatus(r.Context(), requestID, body.Status, body.AdminComment); err != nil {
-		http.Error(w, "db error", http.StatusInternalServerError)
+		writeErrorJSON(w, http.StatusInternalServerError, "db error")
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
