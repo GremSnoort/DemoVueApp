@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { http, apiErrorMessage } from "@/api/http";
-import { auth } from "@/auth/auth";
+import { authStore } from "@/auth/auth.store";
 
 const router = useRouter();
 
@@ -25,8 +25,7 @@ async function onSubmit() {
       password: password.value,
     });
 
-    auth.setToken(res.data.token);
-    auth.setUser(res.data.user);
+    authStore.setAuth(res.data.token, res.data.user);
     router.push("/requests");
   } catch (e) {
     error.value = apiErrorMessage(e);

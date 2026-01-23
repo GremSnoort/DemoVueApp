@@ -1,5 +1,5 @@
 import axios from "axios";
-import { auth } from "@/auth/auth";
+import { authStore } from "@/auth/auth.store";
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -7,7 +7,7 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use((config) => {
-  const token = auth.getToken();
+  const token = authStore.token;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -15,7 +15,7 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err?.response?.status === 401) auth.logout();
+    if (err?.response?.status === 401) authStore.logout();
     return Promise.reject(err);
   }
 );

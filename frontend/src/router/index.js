@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { auth } from "@/auth/auth";
+import { authStore } from "@/auth/auth.store";
 
 import LoginPage from "@/pages/LoginPage.vue";
 import RegisterPage from "@/pages/RegisterPage.vue";
@@ -23,11 +23,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const isAuthed = auth.isAuthed();
+  const isAuthed = authStore.isAuthed();
+
+  if (import.meta.env.DEV) {
+    console.log("NAV", to.path, "authed=", isAuthed, "role=", authStore.user?.role);
+  }
 
   if (to.meta.auth && !isAuthed) return "/login";
   if (to.meta.guestOnly && isAuthed) return "/requests";
-  if (to.meta.admin && !auth.isAdmin()) return "/requests";
+  if (to.meta.admin && !authStore.isAdmin()) return "/requests";
   return true;
 });
 
