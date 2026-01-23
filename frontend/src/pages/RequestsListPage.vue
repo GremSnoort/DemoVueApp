@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { http, apiErrorMessage } from "@/api/http";
+import { getTypeTitle, makeSummary } from "@/domain/domain.utils";
 
 const items = ref([]);
 const error = ref(null);
@@ -10,6 +11,10 @@ const feedbackRating = ref({});
 const feedbackComment = ref({});
 const feedbackError = ref({});
 const feedbackOk = ref({});
+
+function pretty(v) {
+  try { return JSON.stringify(v, null, 2); } catch { return String(v); }
+}
 
 async function load() {
   loading.value = true;
@@ -67,7 +72,8 @@ onMounted(load);
       <div v-for="it in items" :key="it.id" class="card">
         <div class="row">
           <div>
-            <b>{{ it.type }}</b>
+            <b>{{ getTypeTitle(it.type) }}</b>
+            <div style="opacity:0.8; font-size: 14px;">{{ makeSummary(it.type, it.payload) }}</div>
             <div style="opacity:0.8; font-size: 14px;">ID: {{ it.id }}</div>
           </div>
           <div>
@@ -77,7 +83,10 @@ onMounted(load);
 
         <div style="margin-top:10px;">
           <div style="opacity:0.8; font-size:14px;">Payload:</div>
-          <pre style="white-space: pre-wrap; margin: 6px 0; font-size: 13px;">{{ it.payload }}</pre>
+          <details style="margin-top:10px;">
+          <summary style="cursor:pointer; opacity:0.85;">Показать детали</summary>
+          <pre style="white-space: pre-wrap; margin: 8px 0 0; font-size: 13px;">{{ pretty(it.payload) }}</pre>
+          </details>
         </div>
 
         <div v-if="it.admin_comment" style="margin-top:10px;">
