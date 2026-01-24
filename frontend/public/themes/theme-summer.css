@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap");
+
+:root {
+  --bg: #fff4d6;
+  --fg: #3a2e1f;
+  --card-bg: #ffffff;
+  --border: #f0c97a;
+
+  --accent: #f59e0b;
+  --accent-contrast: #2a1d0d;
+
+  --muted: #ffe7b3;
+  --input-bg: #ffffff;
+
+  --danger: #dc2626;
+  --success: #16a34a;
+
+  --topbar-bg: rgba(255, 243, 210, 0.94);
+  --topbar-border: var(--border);
+  --hover-bg: rgba(245, 158, 11, 0.18);
+  --surface-2: #ffffff;
+
+  --font-sans: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+
+  --shadow-sm: 0 10px 20px rgba(245,158,11,.18);
+  --shadow-md: 0 26px 70px rgba(245,158,11,.22);
+
+  --border-w: 2px;
+
+  --pad-card: 16px;
+}

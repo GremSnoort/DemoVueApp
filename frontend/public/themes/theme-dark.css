@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap");
+
+:root {
+  /* base colors */
+  --bg: #0b0c10;
+  --fg: #e6e7eb;
+
+  /* surfaces */
+  --card-bg: #12131a;
+  --surface-2: #151720;
+
+  /* borders & dividers */
+  --border: #2a2c3a;
+  --border-soft: #232532;
+
+  /* accent */
+  --accent: #2b6cff;
+  --accent-contrast: #ffffff;
+
+  /* muted / secondary */
+  --muted: #1f2230;
+  --input-bg: #0f1016;
+
+  /* semantic */
+  --danger: #ff7b7b;
+  --success: #7bff9b;
+
+  /* topbar */
+  --topbar-bg: rgba(11, 12, 16, 0.9);
+  --topbar-border: var(--border);
+
+  /* interaction */
+  --hover-bg: rgba(255, 255, 255, 0.08);
+
+  /* shadows (темнее и глубже, чем в light) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 14px 32px rgba(0, 0, 0, 0.55);
+
+  /* typography */
+  --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}

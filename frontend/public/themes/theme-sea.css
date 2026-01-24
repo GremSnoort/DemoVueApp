@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap");
+
+:root {
+  --bg: #eaf6fb;
+  --fg: #083344;
+  --card-bg: #ffffff;
+  --border: #9fd7ea;
+
+  --accent: #0ea5e9;
+  --accent-contrast: #ffffff;
+
+  --muted: #cfeaf6;
+  --input-bg: #ffffff;
+
+  --danger: #e11d48;
+  --success: #059669;
+
+  --topbar-bg: rgba(224, 242, 254, 0.92);
+  --topbar-border: var(--border);
+  --hover-bg: rgba(14, 165, 233, 0.14);
+  --surface-2: #ffffff;
+
+  /* ВОТ ТУТ разница */
+  --font-sans: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --r-sm: 14px;
+  --r-md: 18px;
+  --r-lg: 26px;
+
+  --shadow-sm: 0 10px 22px rgba(14,165,233,.14);
+  --shadow-md: 0 22px 60px rgba(14,165,233,.20);
+
+  --border-w: 1px;
+
+  --pad-card: 18px;
+  --pad-btn-y: 11px;
+  --pad-btn-x: 16px;
+}

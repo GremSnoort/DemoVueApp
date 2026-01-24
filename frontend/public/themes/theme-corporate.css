@@ -1,0 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap");
+
+:root {
+  /* base */
+  --bg: #f3f7fa;
+  --fg: #102a43;
+
+  /* surfaces */
+  --card-bg: #ffffff;
+  --surface-2: #ffffff;
+
+  /* borders */
+  --border: #cbd5e1;
+  --border-soft: #e2e8f0;
+  --border-w: 1px;
+
+  /* accent */
+  --accent: #0057b7;
+  --accent-contrast: #ffffff;
+
+  /* muted */
+  --muted: #e5edf5;
+  --input-bg: #ffffff;
+
+  /* semantic */
+  --danger: #b91c1c;
+  --success: #047857;
+
+  /* topbar */
+  --topbar-bg: #ffffff;
+  --topbar-border: var(--border);
+
+  /* interaction */
+  --hover-bg: rgba(16, 42, 67, 0.06);
+
+  /* shape — строже, меньше “пузатости” */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+
+  /* shadows — почти плоско */
+  --shadow-sm: 0 1px 2px rgba(16, 42, 67, 0.06);
+  --shadow-md: 0 6px 16px rgba(16, 42, 67, 0.10);
+
+  /* spacing — плотнее */
+  --pad-card: 12px;
+  --pad-btn-y: 8px;
+  --pad-btn-x: 12px;
+  --pad-input-y: 8px;
+  --pad-input-x: 10px;
+
+  /* typography — корпоративная классика */
+  --font-sans: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
