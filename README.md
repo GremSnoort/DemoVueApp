@@ -1,5 +1,9 @@
 # Quick Start
 
 ```bash
-$ docker compose up --build
+# Go backend
+docker compose --profile go up --build
+
+# Python backend
+docker compose --profile py up --build
 ```

@@ -17,8 +17,9 @@ services:
       timeout: 2s
       retries: 30
 
-  backend:
-    build: ./backend
+  backend_go:
+    profiles: ["go"]
+    build: ./backend/golang
     environment:
       APP_ENV: dev
       DB_DSN: postgres://app:app@db:5432/app?sslmode=disable
@@ -26,6 +27,18 @@ services:
       ADMIN_SEED_PASSWORD: Admin12345!
     ports:
       - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend_py:
+    profiles: ["py"]
+    build: ./backend/python
+    environment:
+      DB_DSN: postgres://app:app@db:5432/app?sslmode=disable
+      JWT_SECRET: change_me_super_secret
+      ADMIN_SEED_PASSWORD: Admin12345!
+    ports: ["8080:8080"]
     depends_on:
       db:
         condition: service_healthy
