@@ -7,6 +7,7 @@ Prerequisites:
 sudo apt install postgresql postgresql-contrib
 ```
 
+Create DB:
 ```bash
 export PGDATA="/tmp/pgdata-demo"
 initdb -D "$PGDATA" --encoding=UTF8 --locale=C.UTF-8
@@ -21,10 +22,12 @@ Run DB:
 ```bash
 pg_ctl -D "$PGDATA" -l "$PGDATA/server.log" start
 ```
+
 Check:
 ```bash
 pg_ctl -D "$PGDATA" status
 ```
+
 Stop:
 ```bash
 pg_ctl -D "$PGDATA" stop
