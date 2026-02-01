@@ -117,6 +117,7 @@ python -m venv .venv
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
+_____________________________________
 
 ## 3. Установка Node.js
 
