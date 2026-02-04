@@ -62,7 +62,7 @@ def create_admin():
             (ADMIN_LOGIN, ADMIN_PWD, "Administrator", "8(000)000-00-00", "admin@test.com"))
         created = cur.fetchone()[0] # bool
 
-    db_run(process)
+    db_run(action)
 
 def reply_error(code:int, msg:str):
     raise HTTPException(status_code=code, detail={"error":msg})
@@ -108,7 +108,7 @@ def handler_user_register(input:dict):
             else:
                 reply_error(400, str(e))
 
-    db_run(process)
+    db_run(action)
     return output
 
 # curl -s http://localhost:8080/api/user/login \
@@ -143,7 +143,7 @@ def handler_user_login(input:dict):
             "user": user
         }
 
-    db_run(process)
+    db_run(action)
     return output
 
 # curl -i http://localhost:8080/api/user/reqs/create \
@@ -177,7 +177,7 @@ def handler_user_reqs_create(input:dict, claims=Depends(parse_claims)):
             else:
                 reply_error(400, str(e))
 
-    db_run(process)
+    db_run(action)
     return output
 
 # curl -s http://localhost:8080/api/user/reqs/list -H "Authorization: Bearer $TOKEN" | jq
@@ -192,7 +192,7 @@ def handler_user_reqs_list(claims=Depends(parse_claims)):
         cur.execute("SELECT user_requests_list(%s)", (claims["user_id"],))
         output = cur.fetchone()[0] # jsonb
 
-    db_run(process)
+    db_run(action)
     return output
 
 # curl -i http://localhost:8080/api/user/reqs/$ITEM_ID/rate \
@@ -227,7 +227,7 @@ def handler_user_reqs_rate(req_id:str, input:dict, claims=Depends(parse_claims))
                 reply_error(400, "feedback already exists")
             reply_error(400, str(e))
 
-    db_run(process)
+    db_run(action)
     return output
 
 # Admin --->
@@ -248,7 +248,7 @@ def handler_admin_reqs_list(claims=Depends(restrict_admin)):
         cur.execute("SELECT admin_requests_list()")
         output = cur.fetchone()[0]
 
-    db_run(process)
+    db_run(action)
     return output
 
 # curl -s http://localhost:8080/api/admin/reqs/$ITEM_ID/status \
@@ -272,5 +272,5 @@ def handler_admin_reqs_status(req_id:str, input:dict, claims=Depends(restrict_ad
         except Exception as e:
             reply_error(400, str(e))
 
-    db_run(process)
+    db_run(action)
     return {"status":True}
