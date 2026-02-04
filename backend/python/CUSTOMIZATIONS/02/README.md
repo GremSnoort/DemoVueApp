@@ -16,7 +16,7 @@ Unified DB schema `init.sql` with customizable point in `type` & `payload`:
   payload       JSONB NOT NULL DEFAULT '{}'::jsonb,
 ```
 
-❗️No PG **FUNCTION**s, plain statements in code❗️
+❗️Using PG **FUNCTION**s❗️
 
 ⚠️❗️Check & rewrite `DB_URL` in `db.py`:
 ```python
