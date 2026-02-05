@@ -185,7 +185,6 @@ BEGIN
         'payload', payload,
         'status', status
       )
-      ORDER BY created_at DESC
     ),
     '[]'::jsonb
   )
