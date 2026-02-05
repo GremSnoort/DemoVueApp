@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>New Request</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row" style="margin:16px 0;">
+      <h2 style="margin:0;">Создать заявку</h2>
+      <div class="row">
+        <a class="badge" href="/requests">Мои заявки</a>
+        <button class="secondary" id="logout">Выйти</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="err" class="err" style="margin-bottom:10px;"></div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Тип</label>
+          <input id="type" placeholder="например: service_visit">
+        </div>
+        <div class="field">
+          <label>Payload (JSON)</label>
+          <textarea id="payload" rows="6" placeholder='{"foo":"bar"}'></textarea>
+          <div class="small">Можно оставить пустым — уйдёт {}.</div>
+        </div>
+        <button id="send">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const el = (id)=>document.getElementById(id);
+
+async function api(path, opts){
+  const res = await fetch(path, opts || {});
+  const data = await res.json().catch(()=> ({}));
+  if(!res.ok) throw new Error(data.error || "api error");
+  return data;
+}
+
+el("logout").onclick = async () => {
+  await fetch("/api/auth/logout", {method:"POST"});
+  location.href="/login";
+};
+
+el("send").onclick = async () => {
+  el("err").textContent = "";
+  let payloadObj = {};
+  const txt = (el("payload").value || "").trim();
+  if(txt){
+    try { payloadObj = JSON.parse(txt); }
+    catch { el("err").textContent = "Payload должен быть валидным JSON"; return; }
+  }
+  try{
+    await api("/api/requests", {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({type: el("type").value, payload: payloadObj})
+    });
+    location.href="/requests";
+  } catch(e){
+    el("err").textContent = String(e.message || e);
+    if(String(e.message||e).includes("unauthorized")) location.href="/login";
+  }
+};
+</script>
+</body>
+</html>

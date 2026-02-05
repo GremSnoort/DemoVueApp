@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Register</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card" style="max-width:620px;margin:40px auto;">
+      <h2>Регистрация</h2>
+      <div id="err" class="err" style="margin:10px 0;"></div>
+      <div id="ok" style="margin:10px 0;color:#7bff9b;"></div>
+
+      <div class="grid">
+        <div class="field"><label>Логин</label><input id="login" placeholder="латиница/цифры, min 6"></div>
+        <div class="field"><label>Пароль</label><input id="password" type="password" placeholder="min 8"></div>
+        <div class="field"><label>ФИО</label><input id="full_name" placeholder="Кириллица и пробелы"></div>
+        <div class="field"><label>Телефон</label><input id="phone" placeholder="8(999)111-22-33"></div>
+        <div class="field"><label>Email</label><input id="email" placeholder="u@example.com"></div>
+
+        <button id="btn">Создать пользователя</button>
+
+        <div class="small">
+          Уже зарегистрированы? <a href="/login">Войти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+function showErr(msg){ $("err").textContent = msg || ""; $("ok").textContent=""; }
+function showOk(msg){ $("ok").textContent = msg || ""; $("err").textContent=""; }
+
+$("btn").onclick = async () => {
+  showErr("");
+  try{
+    const res = await fetch("/api/auth/register", {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        login: $("login").value,
+        password: $("password").value,
+        full_name: $("full_name").value,
+        phone: $("phone").value,
+        email: $("email").value
+      })
+    });
+    const data = await res.json().catch(()=> ({}));
+    if(!res.ok) return showErr(data.error || "Ошибка регистрации");
+    showOk("Пользователь создан ✅ Теперь войдите.");
+    setTimeout(()=> location.href="/login", 600);
+  } catch(e){
+    showErr(String(e));
+  }
+};
+</script>
+</body>
+</html>

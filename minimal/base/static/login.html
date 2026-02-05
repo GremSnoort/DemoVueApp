@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card" style="max-width:520px;margin:40px auto;">
+      <h2>Вход</h2>
+      <div id="err" class="err" style="margin:10px 0;"></div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Логин</label>
+          <input id="login" placeholder="user123">
+        </div>
+        <div class="field">
+          <label>Пароль</label>
+          <input id="password" type="password" placeholder="********">
+        </div>
+
+        <button id="btn">Войти</button>
+
+        <div class="small">
+          Еще не зарегистрированы? <a href="/register">Регистрация</a>
+        </div>
+
+        <details class="small">
+          <summary>Админ для теста</summary>
+          <div>login: <b>Admin</b></div>
+          <div>password: <b>Admin12345!</b></div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+function showErr(msg){ $("err").textContent = msg || ""; }
+
+$("btn").onclick = async () => {
+  showErr("");
+  try{
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({login: $("login").value, password: $("password").value})
+    });
+    const data = await res.json().catch(()=> ({}));
+    if(!res.ok) return showErr(data.error || "Ошибка входа");
+    const role = data.user?.role;
+    location.href = role === "admin" ? "/admin" : "/requests";
+  } catch(e){
+    showErr(String(e));
+  }
+};
+</script>
+</body>
+</html>

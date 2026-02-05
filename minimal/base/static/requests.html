@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>My Requests</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row" style="margin:16px 0;">
+      <h2 style="margin:0;">Мои заявки</h2>
+      <div class="row">
+        <a class="badge" href="/requests/new">Создать заявку</a>
+        <button class="secondary" id="logout">Выйти</button>
+      </div>
+    </div>
+
+    <div id="err" class="err"></div>
+    <div id="box" class="grid"></div>
+  </div>
+
+<script>
+const box = document.getElementById_sr = document.getElementById;
+const el = (id) => document.getElementById(id);
+
+async function api(path, opts){
+  const res = await fetch(path, opts || {});
+  const data = await res.json().catch(()=> ({}));
+  if(!res.ok) throw new Error(data.error || "api error");
+  return data;
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+async function load(){
+  el("err").textContent = "";
+  el("box").innerHTML = "";
+  try{
+    const me = await api("/api/me");
+    if(me.user.role === "admin") location.href="/admin";
+
+    const res = await api("/api/requests");
+    const items = res.items || [];
+
+    if(items.length === 0){
+      el("box").innerHTML = `<div class="card small">Заявок пока нет. Создайте первую.</div>`;
+      return;
+    }
+
+    for(const it of items){
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="row">
+          <div>
+            <b>${esc(it.type)}</b>
+            <div class="small">ID: ${it.id}</div>
+          </div>
+          <div class="badge">Статус: <b>${esc(it.status)}</b></div>
+        </div>
+
+        <details style="margin-top:10px;">
+          <summary style="cursor:pointer; opacity:.85;">Payload</summary>
+          <pre class="small" style="white-space:pre-wrap;margin:10px 0 0;">${esc(JSON.stringify(it.payload, null, 2))}</pre>
+        </details>
+
+        ${it.admin_comment ? `<div style="margin-top:10px;">
+          <div class="small">Комментарий администратора:</div>
+          <div>${esc(it.admin_comment)}</div>
+        </div>` : ""}
+
+        <div class="card" style="margin-top:12px;">
+          <b>Оставить отзыв</b>
+          <div class="grid" style="margin-top:10px;">
+            <div class="field">
+              <label>Оценка (1..5)</label>
+              <input type="number" min="1" max="5" value="5" class="rating">
+            </div>
+            <div class="field">
+              <label>Комментарий</label>
+              <input class="comment" placeholder="Коротко о качестве">
+            </div>
+            <div class="err small fb_err"></div>
+            <div class="small" style="color:#7bff9b;display:none;" class="fb_ok">Отзыв отправлен ✅</div>
+            <button class="send">Отправить отзыв</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector(".send").onclick = async () => {
+        const rating = parseInt(card.querySelector(".rating").value, 10);
+        const comment = card.querySelector(".comment").value || null;
+        const err = card.querySelector(".fb_err");
+        err.textContent = "";
+        try{
+          await api(`/api/requests/${it.id}/feedback`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({rating, comment})
+          });
+          err.style.color = "#7bff9b";
+          err.textContent = "Отзыв отправлен ✅";
+        } catch(e){
+          err.style.color = "var(--danger)";
+          err.textContent = String(e.message || e);
+        }
+      };
+
+      el("box").appendChild(card);
+    }
+  } catch(e){
+    el("err").textContent = String(e.message || e);
+    if(String(e.message||e).includes("unauthorized")) location.href="/login";
+  }
+}
+
+el("logout").onclick = async () => {
+  await fetch("/api/auth/logout", {method:"POST"});
+  location.href="/login";
+};
+
+load();
+</script>
+</body>
+</html>

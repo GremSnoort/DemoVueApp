@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row" style="margin:16px 0;">
+      <h2 style="margin:0;">Админка</h2>
+      <div class="row">
+        <a class="badge" href="/requests">Мои заявки</a>
+        <button class="secondary" id="logout">Выйти</button>
+      </div>
+    </div>
+
+    <div id="err" class="err"></div>
+    <div id="box" class="grid"></div>
+  </div>
+
+<script>
+const el = (id)=>document.getElementById(id);
+
+async function api(path, opts){
+  const res = await fetch(path, opts || {});
+  const data = await res.json().catch(()=> ({}));
+  if(!res.ok) throw new Error(data.error || "api error");
+  return data;
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+async function load(){
+  el("err").textContent = "";
+  el("box").innerHTML = "";
+
+  try{
+    const me = await api("/api/me");
+    if(me.user.role !== "admin") location.href="/requests";
+
+    const res = await api("/api/admin/requests");
+    const items = res.items || [];
+    if(items.length === 0){
+      el("box").innerHTML = `<div class="card small">Заявок нет.</div>`;
+      return;
+    }
+
+    for(const it of items){
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="row">
+          <div>
+            <b>${esc(it.type)}</b>
+            <div class="small">ID: ${it.id}</div>
+            <div class="small">User: <b>${esc(it.user_login)}</b> (${it.user_id})</div>
+          </div>
+          <div class="badge">Статус: <b>${esc(it.status)}</b></div>
+        </div>
+
+        <details style="margin-top:10px;">
+          <summary style="cursor:pointer; opacity:.85;">Payload</summary>
+          <pre class="small" style="white-space:pre-wrap;margin:10px 0 0;">${esc(JSON.stringify(it.payload, null, 2))}</pre>
+        </details>
+
+        <div class="grid" style="margin-top:12px;">
+          <div class="field">
+            <label>Новый статус</label>
+            <select class="st">
+              ${["new","in_progress","approved","rejected","done"].map(s=>`<option value="${s}" ${s===it.status?"selected":""}>${s}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label>Комментарий администратора</label>
+            <input class="ac" placeholder="необязательно" value="${esc(it.admin_comment || "")}">
+          </div>
+          <div class="err small msg"></div>
+          <button class="save">Сохранить</button>
+        </div>
+      `;
+      card.querySelector(".save").onclick = async () => {
+        const status = card.querySelector(".st").value;
+        const admin_comment = card.querySelector(".ac").value || null;
+        const msg = card.querySelector(".msg");
+        msg.textContent = "";
+        try{
+          await api(`/api/admin/requests/${it.id}/status`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({status, admin_comment})
+          });
+          msg.style.color = "#7bff9b";
+          msg.textContent = "Сохранено ✅";
+        } catch(e){
+          msg.style.color = "var(--danger)";
+          msg.textContent = String(e.message || e);
+        }
+      };
+
+      el("box").appendChild(card);
+    }
+  } catch(e){
+    el("err").textContent = String(e.message || e);
+    if(String(e.message||e).includes("unauthorized")) location.href="/login";
+  }
+}
+
+el("logout").onclick = async () => {
+  await fetch("/api/auth/logout", {method:"POST"});
+  location.href="/login";
+};
+
+load();
+</script>
+</body>
+</html>
