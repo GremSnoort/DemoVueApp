@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import TopSlider from "@/components/TopSlider.vue";
+import { authStore } from "@/auth/auth.store";
 import { http, apiErrorMessage } from "@/api/http";
 
 const items = ref([]);
@@ -49,6 +51,7 @@ onMounted(load);
 </script>
 
 <template>
+  <TopSlider v-if="authStore.isAuthed()" />
   <div class="card">
     <div class="row">
       <h2 style="margin:0;">Мои заявки</h2>

@@ -17,3 +17,121 @@ input, textarea, select {
 }
 .err { color: #ff7b7b; font-size: 14px; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+
+/* =========================
+   AppHeader
+   ========================= */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #111;
+  border-bottom: 1px solid #333;
+}
+
+.topbar__inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar-spacer { height: 10px; }
+
+.brand { cursor: pointer; }
+
+.nav { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.navlink { text-decoration: none; padding: 6px 10px; border-radius: 10px; }
+
+.navlink.active { background: #222; }
+
+.navlink--admin { border: 1px solid #a55; }
+
+.right { display: flex; gap: 10px; align-items: center; }
+
+.who { opacity: 0.85; }
+
+.btnlink {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #2b6cff;
+  color: #fff;
+}
+
+.btnlink.outline { background: transparent; border: 1px solid #333; }
+
+
+/* =========================
+   TopSlider
+   ========================= */
+
+.slider {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border-bottom: 1px solid #2a2c3a;
+  overflow: hidden;
+  position: relative;
+  height: 540px;
+  background: #0f1016;
+  margin-bottom: 16px;
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  transition: transform 450ms ease;
+}
+
+.slide {
+  flex: 0 0 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.15),
+    rgba(0,0,0,0.55)
+  );
+}
+
+.dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.18);
+  cursor: pointer;
+}
+
+.dot.active { background: rgba(255,255,255,0.9); }
+
+@media (max-width: 640px) {
+  .slider { height: 180px; }
+}

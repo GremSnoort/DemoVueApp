@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import TopSlider from "@/components/TopSlider.vue";
+import { authStore } from "@/auth/auth.store";
 import { http, apiErrorMessage } from "@/api/http";
 
 const router = useRouter();
 
 const type = ref("service_visit");
-const payloadText = ref(JSON.stringify({ note: "demo" }, null, 2));
 
 const test1 = ref("test1");
 const test2 = ref("test2");
@@ -34,6 +35,7 @@ async function submit() {
 </script>
 
 <template>
+  <TopSlider v-if="authStore.isAuthed()" />
   <div class="card">
     <h2>Создать заявку</h2>
 

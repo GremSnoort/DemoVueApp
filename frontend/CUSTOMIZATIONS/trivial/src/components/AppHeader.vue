@@ -72,32 +72,3 @@ function isActive(path) {
 
   <div class="topbar-spacer"></div>
 </template>
-
-<style scoped>
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: #111;
-  border-bottom: 1px solid #333;
-}
-.topbar__inner {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.topbar-spacer { height: 10px; }
-.brand { cursor: pointer; }
-.nav { display: flex; gap: 10px; flex-wrap: wrap; }
-.navlink { text-decoration: none; padding: 6px 10px; border-radius: 10px; }
-.navlink.active { background: #222; }
-.navlink--admin { border: 1px solid #a55; }
-.right { display: flex; gap: 10px; align-items: center; }
-.who { opacity: 0.85; }
-.btnlink { text-decoration: none; padding: 8px 12px; border-radius: 10px; background: #2b6cff; color: #fff; }
-.btnlink.outline { background: transparent; border: 1px solid #333; }
-</style>
