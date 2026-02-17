@@ -5,6 +5,7 @@ const slides = [
   { src: "/slider/image07.jpg", alt: "Slide 1" },
   { src: "/slider/image08.webp", alt: "Slide 2" },
   { src: "/slider/image10.webp", alt: "Slide 3" },
+  { src: "/slider/image13.webp", alt: "Slide 4" },
 ];
 
 const idx = ref(0);
