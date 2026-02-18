@@ -56,6 +56,8 @@ C:\Users\DEMEXAM\Desktop\DEMOEXAM_LuidmilaKrivih
 psql -h 127.0.0.1 -U postgres postgres
 ```
 
+❗️**Пароль: postgres**
+
 Далее появится строка, в которую вбиваем команды СТРОГО ПО ОЧЕРЕДИ (вместо `nickname` - подставляем СВОЙ):
 ```sql
 CREATE ROLE nickname WITH LOGIN PASSWORD 'nickname';
