@@ -11,6 +11,8 @@
 ‼️**НЕ ТРОГАТЬ ПАПКУ:**
 - `node_modules`
 
+Используем **VSCode**.
+
 Заходим в папку `frontend`. Далее действуем с опорой на прототип **DemoVueApp** `frontend/CUSTOMIZATIONS/trivial`.
 - заменяем содержимое файла `vite.config.js`
 - создаем файл `.env`
