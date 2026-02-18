@@ -256,18 +256,33 @@ def api_user_reqs_list(claims=Depends(parse_claims)):
             SELECT jsonb_build_object(
               'items',
               COALESCE(jsonb_agg(
-                  jsonb_build_object(
-                    'id', r.id::text,
-                    'user_id', r.user_id::text,
-                    'type', r.type,
-                    'payload', r.payload,
-                    'status', r.status::text
-                  )
-                  ORDER BY r.id
-                ), '[]'::jsonb
-              ))
-            FROM requests r WHERE r.user_id = %s;
-            """, (claims["user_id"],),)
+                jsonb_build_object(
+                  'id', r.id::text,
+                  'user_id', r.user_id::text,
+                  'type', r.type,
+                  'payload', r.payload,
+                  'status', r.status::text,
+                  'feedback',
+                    CASE
+                      WHEN f.id IS NOT NULL THEN
+                        jsonb_build_object(
+                          'id', f.id::text,
+                          'rating', f.rating,
+                          'comment', f.comment
+                        )
+                      ELSE NULL
+                    END
+                )
+                ORDER BY r.id
+              ), '[]'::jsonb)
+            )
+            FROM requests r
+            LEFT JOIN feedback f
+              ON f.request_id = r.id
+             AND f.user_id = %s
+            WHERE r.user_id = %s;
+            """,
+            (claims["user_id"], claims["user_id"]))
 
         row = cur.fetchone()
         output = row[0]
