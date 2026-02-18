@@ -358,23 +358,31 @@ def api_admin_reqs_list(claims=Depends(restrict_admin)):
 
     def process(cur):
         nonlocal output
-        cur.execute(
-            """
+        cur.execute("""
             SELECT jsonb_build_object(
-              'items',
-              COALESCE(jsonb_agg(
-                  jsonb_build_object(
-                    'id', r.id::text,
-                    'user_id', r.user_id::text,
-                    'user_login', u.login,
-                    'type', r.type,
-                    'payload', r.payload,
-                    'status', r.status::text
-                  )
-                  ORDER BY r.id
-                ), '[]'::jsonb
-              ))
-            FROM requests r JOIN users u ON u.id = r.user_id;
+            'items',
+            COALESCE(jsonb_agg(
+                jsonb_build_object(
+                'id', r.id::text,
+                'user_id', r.user_id::text,
+                'user_login', u.login,
+                'type', r.type,
+                'payload', r.payload,
+                'status', r.status::text,
+                'feedback', CASE
+                    WHEN f.id IS NULL THEN NULL
+                    ELSE jsonb_build_object(
+                    'rating', f.rating,
+                    'comment', f.comment
+                    )
+                END
+                )
+                ORDER BY r.id
+            ), '[]'::jsonb)
+            )
+            FROM requests r
+            JOIN users u ON u.id = r.user_id
+            LEFT JOIN feedback f ON f.request_id = r.id AND f.user_id = r.user_id;
         """)
 
         row = cur.fetchone()

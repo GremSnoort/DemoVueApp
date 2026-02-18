@@ -74,6 +74,24 @@ onMounted(load);
           <pre style="white-space: pre-wrap;">{{ it.payload }}</pre>
         </details>
 
+        <!-- Отзыв -->
+        <div v-if="it.feedback" class="card" style="margin-top:12px; background:#fff7ed;">
+          <b>Отзыв пользователя</b>
+
+          <div style="margin-top:10px;">
+
+            <div class="row">
+              <div><b>Оценка:</b> {{ it.feedback.rating }} / 5</div>
+            </div>
+
+            <div style="margin-top:8px;">
+              <b>Комментарий:</b>
+              <div style="opacity:.9;">{{ it.feedback.comment || "—" }}</div>
+            </div>
+
+          </div>
+        </div>
+
         <div class="grid grid-2" style="margin-top:12px;">
           <div class="field">
             <label>New status</label>
