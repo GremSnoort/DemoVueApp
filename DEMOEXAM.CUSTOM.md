@@ -11,6 +11,26 @@
 ‼️**НЕ ТРОГАТЬ ПАПКУ:**
 - `node_modules`
 
+Заходим в папку `frontend`. Далее действуем с опорой на прототип **DemoVueApp** `frontend/CUSTOMIZATIONS/trivial`.
+- заменяем содержимое файла `vite.config.js`
+- создаем файл `.env`
+- создаем файл `src/api/http.js`
+- создаем файл `src/auth/auth.store.js`
+- создаем файл `src/router/index.js`
+- заменяем содержимое файла `src/main.js`
+- заменяем содержимое файла `src/App.vue`
+- в папке `src/components/` создаем файлы:
+  - `AppHeader.vue`
+  - `TopSlider.vue`
+- создаем папку `pages` и в ней создаем файлы:
+  - `AdminPage.vue`
+  - `LoginPage.vue`
+  - `RegisterPage.vue`
+  - `RequestCreatePage.vue`
+  - `RequestsListPage.vue`
+- создаем папку `src/assets/fonts/` и оставляем пустой
+- создаем папку `src/styles/`
+
 ### CSS style
 
 Берем из прототипа **DemoVueApp**:
