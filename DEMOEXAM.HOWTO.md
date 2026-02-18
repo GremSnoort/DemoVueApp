@@ -69,6 +69,7 @@ GRANT ALL PRIVILEGES ON DATABASE nickname TO nickname;
 ```
 DB_URL = "postgresql://nickname:nickname@127.0.0.1:5432/nickname?sslmode=disable"
 ```
+❗️👆 Строку выше (`DB_URL`) исправляем в файле `pybackend/db.py`: дубликаты удаляем, корректную одну строку оставляем.
 
 ### ❓ **Как настроить backend?**
 
@@ -138,8 +139,8 @@ npm run dev
 
 **СТРОГО ПО ОКОНЧАНИИ РАБОТЫ**
 
-Чтобы получить ER-диаграмму в PostgreSQL, в терминальном окне **Git Bash** зайти в корень своего проекта и выполнить:
+Чтобы получить ER-диаграмму в PostgreSQL, в терминальном окне **Git Bash** зайти в корень своего проекта и выполнить (вместо `nickname` - подставляем СВОЙ):
 ```bash
-pg_dump -s -U postgres -d postgres > ER.sql
+pg_dump -s -U nickname -d nickname > ER.sql
 ```
 Данная команда сложит файл `ER.sql` в корень проекта, рядом с подпапками `frontend` и `pybackend`.

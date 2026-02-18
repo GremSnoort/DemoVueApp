@@ -30,8 +30,9 @@
   - `RegisterPage.vue`
   - `RequestCreatePage.vue`
   - `RequestsListPage.vue`
-- создаем папку `src/assets/fonts/` и оставляем пустой
-- создаем папку `src/styles/`
+- создаем папку `src/assets/fonts/` и оставляем пустой (на данный момент)
+- создаем папку `src/styles/` и оставляем пустой (на данный момент)
+- создаем папку `public/slider/` и оставляем пустой (на данный момент)
 
 ### CSS style
 
@@ -46,6 +47,16 @@ frontend/src/styles/base.css
 
 ❗️**Остальные файлы из** `frontend/CUSTOMIZATIONS/trivial/src/styles/` **копировать НЕ НУЖНО!**
 
+❗️Поправить в коде `import`:
+- открыть файл `src/main.js`
+- заменить строку:
+```js
+import "@/styles/__fonted.css";
+```
+- на:
+```js
+import "@/styles/base.css";
+```
 
 ## ‼️ **ИСПРАВЛЯЕМ НАЗВАНИЕ ПРОЕКТА!!!**
 
@@ -139,3 +150,21 @@ frontend/src/assets/fonts/
 }
 ```
 - имя `Roboto` заменяем на имя своего шрифта и ПРОВЕРЯЕМ ПУТИ до `.ttf` - необходимо убедиться, что эти файлы существуют и корректно переименованы
+
+## ‼️ **ИСПРАВЛЯЕМ login & password для Admin!!! (backend)**
+
+ℹ️ **В .pdf файле с ТЗ указаны креды для Администратора. Они отличаются от стандартных admin/admin. Нужно заменить их на стороне pybackend.**
+
+- открываем файл `pybackend/app.py`
+- ищем поиском по файлу метод `create_admin`
+- ищем строки:
+```python
+        login = "admin"
+        pwd = "admin"
+```
+- и заменяем на:
+```python
+        login = "LOGIN"
+        pwd = "PASSWORD"
+```
+- где `LOGIN` и `PASSWORD` - взяты из файла с ТЗ!

@@ -77,6 +77,10 @@ def create_admin():
         pwd = "admin"
 
         cur.execute("""
+            DELETE FROM users WHERE role='admin';
+        """)
+
+        cur.execute("""
             WITH ins AS (
                 INSERT INTO users (login, password, name, phone, email, role)
                 VALUES (%s,%s,%s,%s,%s,'admin')
