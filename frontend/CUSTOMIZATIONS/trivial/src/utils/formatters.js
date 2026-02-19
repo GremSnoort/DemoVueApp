@@ -4,37 +4,37 @@
 export function formatStatus(val) {
   const map = {
     new: "Новая",
-    in_progress: "Идет обучение",
-    done: "Обучение завершено",
+    in_progress: "Банкет назначен",
+    done: "Банкет завершен",
   };
   return map[val] || val || "—";
 }
 
-// ===== COURSE =====
-export function formatCourse(val) {
+// ===== ROOM TYPE =====
+export function formatRoomType(v) {
   const map = {
-    qualification: "Курс повышения квалификации",
-    retraining: "Курс переподготовки",
-    labor_safety: "Курс по охране труда",
+    hall: "Зал",
+    restaurant: "Ресторан",
+    summer_veranda: "Летняя веранда",
+    closed_veranda: "Закрытая веранда",
   };
-  return map[val] || val || "—";
+  return map[v] || v || "—";
 }
 
 // ===== PAYMENT =====
-export function formatPayment(val) {
+export function formatPaymentMethod(v) {
   const map = {
     card: "Банковская карта",
     sbp: "СБП",
     invoice: "Счёт для юр. лица (безнал)",
     cash: "Наличные",
   };
-  return map[val] || val || "—";
+  return map[v] || v || "—";
 }
 
 // ===== DATE =====
 export function formatDate(val) {
   if (!val) return "—";
-
   try {
     const d = new Date(val);
     if (Number.isNaN(d.getTime())) return String(val);

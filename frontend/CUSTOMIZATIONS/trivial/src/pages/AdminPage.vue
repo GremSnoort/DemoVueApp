@@ -3,9 +3,9 @@ import { onMounted, ref } from "vue";
 import { http, apiErrorMessage } from "@/api/http";
 import {
   formatStatus,
-  formatCourse,
-  formatPayment,
-  formatDate
+  formatRoomType,
+  formatPaymentMethod,
+  formatDate,
 } from "@/utils/formatters";
 
 const items = ref([]);
@@ -16,15 +16,27 @@ const newStatus = ref({});
 const statusErr = ref({});
 const statusOk = ref({});
 
-// достаем поля из payload максимально безопасно
-function getCourseType(payload) {
-  return payload?.course_type ?? payload?.course ?? payload?.type ?? null;
+function isBanquetBooking(it) {
+  return it?.type === "banquet_hall_booking";
+}
+
+// максимально безопасно достаем поля из payload (на случай старых/разных форматов)
+function getRoomType(payload) {
+  return payload?.room_type ?? payload?.room ?? payload?.place_type ?? null;
 }
 function getStartDate(payload) {
   return payload?.start_at ?? payload?.start_time ?? payload?.start ?? null;
 }
 function getPayment(payload) {
   return payload?.payment_method ?? payload?.payment ?? null;
+}
+
+function prettyPayload(payload) {
+  try {
+    return JSON.stringify(payload, null, 2);
+  } catch {
+    return String(payload);
+  }
 }
 
 async function load() {
@@ -46,7 +58,7 @@ async function setStatus(id) {
 
   const s = (newStatus.value[id] || "").trim();
   if (!s) {
-    statusErr.value[id] = "status required";
+    statusErr.value[id] = "Выберите статус";
     return;
   }
 
@@ -65,79 +77,104 @@ onMounted(load);
 <template>
   <div class="card">
     <div class="row">
-      <h2 style="margin:0;">Панель администратора</h2>
+      <h2 style="margin: 0;">Панель администратора</h2>
       <button class="btn secondary" @click="load" :disabled="loading">
         {{ loading ? "..." : "Обновить" }}
       </button>
     </div>
 
-    <div v-if="error" class="err" style="margin-top:10px;">{{ error }}</div>
+    <div v-if="error" class="err" style="margin-top: 10px;">{{ error }}</div>
 
-    <div class="grid" style="margin-top:12px;">
+    <div v-if="items.length === 0 && !loading" style="opacity: 0.8; margin-top: 12px;">
+      Пока нет заявок.
+    </div>
+
+    <div class="grid" style="margin-top: 12px;">
       <div v-for="it in items" :key="it.id" class="card">
         <div class="row">
           <div>
-            <b>Заявка на обучение</b>
-            <div style="opacity:.8;">Пользователь: {{ it.user_login }} ({{ it.user_id }})</div>
-            <div style="opacity:.8;">Статус: {{ formatStatus(it.status) }}</div>
+            <b>
+              {{ isBanquetBooking(it) ? "Бронирование зала для банкета" : it.type }}
+            </b>
+            <div style="opacity: 0.8;">
+              Пользователь: {{ it.user_login }} ({{ it.user_id }})
+            </div>
+            <div style="opacity: 0.8;">
+              Статус: {{ formatStatus(it.status) }}
+            </div>
           </div>
         </div>
 
-        <!-- Детали заявки по ТЗ (вместо payload) -->
-        <div class="card" style="margin-top:12px; background:#f8fafc;">
+        <!-- Детали заявки -->
+        <div class="card" style="margin-top: 12px; background: #f8fafc;">
           <b>Детали заявки</b>
 
-          <div class="grid grid-2" style="margin-top:10px;">
-            <div class="field">
-              <label>Вид курса</label>
-              <div>{{ formatCourse(getCourseType(it.payload)) }}</div>
-            </div>
+          <div class="grid grid-2" style="margin-top: 10px;">
+            <template v-if="isBanquetBooking(it)">
+              <div class="field">
+                <label>Вид помещения</label>
+                <div>{{ formatRoomType(getRoomType(it.payload)) }}</div>
+              </div>
 
-            <div class="field">
-              <label>Дата начала обучения</label>
-              <div>{{ formatDate(getStartDate(it.payload)) }}</div>
-            </div>
+              <div class="field">
+                <label>Дата и время начала</label>
+                <div>{{ formatDate(getStartDate(it.payload)) }}</div>
+              </div>
 
-            <div class="field">
-              <label>Способ оплаты</label>
-              <div>{{ formatPayment(getPayment(it.payload)) }}</div>
+              <div class="field">
+                <label>Способ оплаты</label>
+                <div>{{ formatPaymentMethod(getPayment(it.payload)) }}</div>
+              </div>
+            </template>
+
+            <!-- fallback для других типов -->
+            <div class="field" v-else>
+              <label>Payload</label>
+              <div style="opacity: 0.8;">(неизвестный тип заявки, показываю JSON)</div>
+              <pre style="white-space: pre-wrap; margin: 8px 0 0;">
+{{ prettyPayload(it.payload) }}
+              </pre>
             </div>
           </div>
         </div>
 
         <!-- Отзыв -->
-        <div v-if="it.feedback" class="card" style="margin-top:12px; background:#fff7ed;">
+        <div v-if="it.feedback" class="card" style="margin-top: 12px; background: #fff7ed;">
           <b>Отзыв пользователя</b>
 
-          <div style="margin-top:10px;">
+          <div style="margin-top: 10px;">
             <div><b>Оценка:</b> ⭐ {{ it.feedback.rating }} / 5</div>
 
-            <div style="margin-top:8px;">
+            <div style="margin-top: 8px;">
               <b>Комментарий:</b>
-              <div style="opacity:.9;">{{ it.feedback.comment || "—" }}</div>
+              <div style="opacity: 0.9;">{{ it.feedback.comment || "—" }}</div>
             </div>
           </div>
         </div>
 
         <!-- Смена статуса -->
-        <div class="grid grid-2" style="margin-top:12px;">
+        <div class="grid grid-2" style="margin-top: 12px;">
           <div class="field">
             <label>Поменять статус</label>
             <select v-model="newStatus[it.id]">
               <option value="" disabled>— выберите —</option>
               <option value="new">Новая</option>
-              <option value="in_progress">Идет обучение</option>
-              <option value="done">Обучение завершено</option>
+              <option value="in_progress">Банкет назначен</option>
+              <option value="done">Банкет завершен</option>
             </select>
           </div>
 
-          <div style="display:flex; align-items:end;">
+          <div style="display: flex; align-items: end;">
             <button class="btn" @click="setStatus(it.id)">Сохранить</button>
           </div>
         </div>
 
-        <div v-if="statusErr[it.id]" class="err" style="margin-top:8px;">{{ statusErr[it.id] }}</div>
-        <div v-if="statusOk[it.id]" style="margin-top:8px; color:#16a34a;">Статус изменен ✅</div>
+        <div v-if="statusErr[it.id]" class="err" style="margin-top: 8px;">
+          {{ statusErr[it.id] }}
+        </div>
+        <div v-if="statusOk[it.id]" style="margin-top: 8px; color: #16a34a;">
+          Статус изменен ✅
+        </div>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import TopSlider from "@/components/TopSlider.vue";
 import { authStore } from "@/auth/auth.store";
@@ -7,41 +7,65 @@ import { http, apiErrorMessage } from "@/api/http";
 
 const router = useRouter();
 
-const type = ref("course_request");
+const type = "banquet_hall_booking";
 
-// Поля (по ТЗ)
-const courseType = ref("qualification");
+// Опции по ТЗ
+const ROOM_TYPES = [
+  { value: "hall", label: "Зал" },
+  { value: "restaurant", label: "Ресторан" },
+  { value: "summer_veranda", label: "Летняя веранда" },
+  { value: "closed_veranda", label: "Закрытая веранда" },
+];
+
+const PAYMENT_METHODS = [
+  { value: "card", label: "Банковская карта" },
+  { value: "sbp", label: "СБП" },
+  { value: "invoice", label: "Счёт для юр. лица (безнал)" },
+  { value: "cash", label: "Наличные" },
+];
+
+const roomType = ref("");
 const startAt = ref("");
 const paymentMethod = ref("");
 
 const error = ref("");
 const loading = ref(false);
 
-function validate() {
-  if (!courseType.value) return "Выберите вид курса";
+const minDateTimeLocal = computed(() => {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
+});
+
+const validationError = computed(() => {
+  if (!roomType.value) return "Выберите вид помещения";
   if (!startAt.value) return "Укажите дату и время начала";
   if (!paymentMethod.value) return "Выберите способ оплаты";
   return "";
-}
+});
+
+const canSubmit = computed(() => !loading.value && !validationError.value);
 
 async function submit() {
   error.value = "";
-  const v = validate();
-  if (v) {
-    error.value = v;
+  if (validationError.value) {
+    error.value = validationError.value;
     return;
   }
 
   loading.value = true;
   try {
     await http.post("/api/user/reqs/create", {
-      type: type.value,
+      type,
       payload: {
-        course_type: courseType.value,
-        start_at: startAt.value, // строка из input datetime-local
+        room_type: roomType.value,
+        start_at: startAt.value,
         payment_method: paymentMethod.value,
       },
     });
+
     router.push("/requests");
   } catch (e) {
     error.value = apiErrorMessage(e);
@@ -55,39 +79,43 @@ async function submit() {
   <TopSlider v-if="authStore.isAuthed()" />
 
   <div class="card">
-    <h2>Оформление заявки на курс</h2>
+    <h2>Заявка на бронирование зала для банкета</h2>
 
     <div v-if="error" class="err">{{ error }}</div>
 
-    <div class="grid">
+    <form class="grid" @submit.prevent="submit">
       <div class="field">
-        <label>Вид курса</label>
-        <select v-model="courseType">
-          <option value="qualification">Курс повышения квалификации</option>
-          <option value="retraining">Курс переподготовки</option>
-          <option value="labor_safety">Курс по охране труда</option>
+        <label>Вид помещения</label>
+        <select v-model="roomType">
+          <option value="" disabled>— выберите вид помещения —</option>
+          <option v-for="o in ROOM_TYPES" :key="o.value" :value="o.value">
+            {{ o.label }}
+          </option>
         </select>
       </div>
 
       <div class="field">
-        <label>Предпочтительное время старта занятий</label>
-        <input type="datetime-local" v-model="startAt" />
+        <label>Дата и время начала</label>
+        <input
+          type="datetime-local"
+          v-model="startAt"
+          :min="minDateTimeLocal"
+        />
       </div>
 
       <div class="field">
         <label>Способ оплаты</label>
         <select v-model="paymentMethod">
           <option value="" disabled>— выберите способ оплаты —</option>
-          <option value="card">Банковская карта</option>
-          <option value="sbp">СБП</option>
-          <option value="invoice">Счёт для юр. лица (безнал)</option>
-          <option value="cash">Наличные</option>
+          <option v-for="o in PAYMENT_METHODS" :key="o.value" :value="o.value">
+            {{ o.label }}
+          </option>
         </select>
       </div>
 
-      <button class="btn" :disabled="loading" @click="submit">
+      <button class="btn" type="submit" :disabled="!canSubmit">
         {{ loading ? "..." : "Отправить заявку" }}
       </button>
-    </div>
+    </form>
   </div>
 </template>

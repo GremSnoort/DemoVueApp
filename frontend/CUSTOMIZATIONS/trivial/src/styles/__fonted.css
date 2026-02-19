@@ -1,30 +1,30 @@
 @font-face {
-  font-family: "Inter";
-  src: url("../assets/fonts/Inter/static/Inter_28pt-Light.ttf") format("truetype");
+  font-family: "Oswald";
+  src: url("../assets/fonts/Oswald/static/Oswald-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter";
-  src: url("../assets/fonts/Inter/static/Inter_28pt-Regular.ttf") format("truetype");
+  font-family: "Oswald";
+  src: url("../assets/fonts/Oswald/static/Oswald-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter";
-  src: url("../assets/fonts/Inter/static/Inter_28pt-Medium.ttf") format("truetype");
+  font-family: "Oswald";
+  src: url("../assets/fonts/Oswald/static/Oswald-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Inter";
-  src: url("../assets/fonts/Inter/static/Inter_28pt-Bold.ttf") format("truetype");
+  font-family: "Oswald";
+  src: url("../assets/fonts/Oswald/static/Oswald-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -35,25 +35,30 @@
    ========================= */
 
 :root {
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family: "Oswald", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
 
   font-size: 16px;
   line-height: 1.5;
   font-weight: 400;
 
-  /* === New Blue Palette === */
+  /* === Banquet Palette === */
   --fg: #212529;
-  --muted-fg: #6c757d;
+  --muted-fg: rgba(33, 37, 41, 0.72);
 
-  --bg: #ced4da;
+  /* фон/карточки */
+  --bg: #FEEDD0;
   --card-bg: #ffffff;
-  --border: #dee2e6;
+  --border: rgba(0, 100, 0, 0.18);
 
-  --accent: #007bff;
-  --accent-dark: #0d47a1;
+  /* акцент (кнопки/active) */
+  --accent: #DAA520;
+  --accent-dark: #006400;
   --accent-contrast: #ffffff;
 
-  --danger: #dc3545;
+  /* ошибки */
+  --danger: #DC143C;
+
+  --tint: #FFDAB9;
 
   --r-sm: 8px;
   --r-md: 10px;
@@ -67,8 +72,33 @@
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+  background: linear-gradient(180deg, #ffffff 0%, var(--tint) 45%, var(--bg) 100%);
   color: var(--fg);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(218,165,32,0.22);
+}
+
+.btn.secondary {
+  background: var(--tint);
+  color: var(--fg);
+  box-shadow: none;
+}
+
+.navlink.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.dot {
+  border: 1px solid var(--accent-dark);
+  background: rgba(255,255,255,0.65);
+}
+.dot.active {
+  background: var(--accent);
+  border-color: var(--accent-dark);
 }
 
 /* Typography */
@@ -149,11 +179,6 @@ input, textarea, select {
   font-size: 16px;
 }
 
-input:focus, textarea:focus, select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,123,255,0.18);
-}
-
 .err {
   color: var(--danger);
   font-size: 14px;
@@ -173,17 +198,12 @@ input:focus, textarea:focus, select:focus {
   font-weight: 500;
   box-shadow: 0 6px 16px rgba(0,123,255,0.25);
   transition: all 0.15s ease;
+  font-family: Oswald;
 }
 
 .btn:hover {
   background: var(--accent-dark);
   box-shadow: 0 8px 20px rgba(13,71,161,0.30);
-}
-
-.btn.secondary {
-  background: var(--border);
-  color: var(--fg);
-  box-shadow: none;
 }
 
 /* =========================
@@ -225,11 +245,6 @@ input:focus, textarea:focus, select:focus {
 
 .navlink:hover {
   background: var(--border);
-}
-
-.navlink.active {
-  background: var(--accent);
-  color: white;
 }
 
 .right {
@@ -332,19 +347,6 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   gap: 10px;
   justify-content: center;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  border: 1px solid var(--accent-dark);
-  background: rgba(255,255,255,0.6);
-}
-
-.dot.active {
-  background: var(--accent);
-  border-color: var(--accent-dark);
 }
 
 @media (max-width: 640px) {

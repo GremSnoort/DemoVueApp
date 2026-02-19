@@ -32,7 +32,7 @@ function isActive(path) {
           @click="$router.push(isAuthed ? (isAdmin ? '/admin' : '/requests') : '/login')"
         >
           <img :src="logo" alt="Логотип" class="brand-logo" />
-          <span class="brand-text">Учусь.РФ</span>
+          <span class="brand-text">Банкетам.Нет</span>
         </div>
 
         <nav v-if="isAuthed" class="nav">
