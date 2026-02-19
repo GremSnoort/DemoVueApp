@@ -41,43 +41,50 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* === Banquet Palette === */
-  --fg: #212529;
-  --muted-fg: rgba(33, 37, 41, 0.72);
+  /* ===== Banquet Green/Red Theme ===== */
 
-  /* фон/карточки */
-  --bg: #FEEDD0;
+  --fg: #1f2d23;
+  --muted-fg: rgba(31, 45, 35, 0.65);
+
+  --bg: #e8f3ea;
   --card-bg: #ffffff;
-  --border: rgba(0, 100, 0, 0.18);
 
-  /* акцент (кнопки/active) */
-  --accent: #DAA520;
-  --accent-dark: #006400;
+  --tint: #d9ecdd;
+
+  /* основной зелёный */
+  --accent: #006400;
+  --accent-dark: #004d00;
   --accent-contrast: #ffffff;
 
-  /* ошибки */
+  /* красный акцент */
   --danger: #DC143C;
+  --danger-soft: rgba(220,20,60,0.08);
 
-  --tint: #FFDAB9;
+  --border: rgba(0,100,0,0.15);
 
   --r-sm: 8px;
   --r-md: 10px;
   --r-lg: 12px;
 
   --shadow-sm:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 4px 10px rgba(0,0,0,0.06);
+    0 2px 6px rgba(0, 80, 0, 0.06),
+    0 8px 20px rgba(0, 80, 0, 0.08);
 
   --shadow-md:
-    0 4px 12px rgba(0,0,0,0.06),
-    0 12px 32px rgba(0,0,0,0.08);
+    0 4px 12px rgba(0, 80, 0, 0.10),
+    0 16px 36px rgba(0, 80, 0, 0.12);
 
   --slider-h: 540px;
 }
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #ffffff 0%, var(--tint) 45%, var(--bg) 100%);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--tint) 40%,
+    var(--bg) 100%
+  );
   color: var(--fg);
 }
 
@@ -163,6 +170,16 @@ a { color: inherit; }
   transform: translateY(-2px);
 }
 
+.card::before {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(to right, var(--accent), var(--danger));
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  margin: -20px -20px 16px -20px;
+}
+
 .row {
   display: flex;
   gap: 12px;
@@ -193,6 +210,7 @@ input, textarea, select {
 .err {
   color: var(--danger);
   font-size: 14px;
+  font-weight: 500;
 }
 
 /* =========================
@@ -213,8 +231,8 @@ input, textarea, select {
 }
 
 .btn:hover {
-  background: var(--accent-dark);
-  box-shadow: 0 8px 20px rgba(13,71,161,0.30);
+  background: var(--danger);
+  box-shadow: 0 8px 20px rgba(220,20,60,0.30);
 }
 
 /* =========================
@@ -256,6 +274,11 @@ input, textarea, select {
 
 .navlink:hover {
   background: var(--border);
+}
+
+.navlink.active {
+  background: var(--accent);
+  color: white;
 }
 
 .right {
