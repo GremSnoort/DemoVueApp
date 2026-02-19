@@ -6,7 +6,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
-  CREATE TYPE request_status AS ENUM ('new', 'in_progress', 'approved', 'rejected', 'done');
+  CREATE TYPE request_status AS ENUM ('new', 'in_progress', 'done');
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
