@@ -1,34 +1,30 @@
-/* =========================
-   Roboto Local
-   ========================= */
-
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/Roboto/static/Roboto-Light.ttf") format("truetype");
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/Roboto/static/Roboto-Regular.ttf") format("truetype");
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/Roboto/static/Roboto-Medium.ttf") format("truetype");
-  font-weight: 600;
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Medium.ttf") format("truetype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Roboto";
-  src: url("../assets/fonts/Roboto/static/Roboto-Bold.ttf") format("truetype");
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -39,31 +35,33 @@
    ========================= */
 
 :root {
-  font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+
+  font-size: 16px;
   line-height: 1.5;
   font-weight: 400;
 
-  /* Palette */
-  --fg: #343a40;
+  /* === New Blue Palette === */
+  --fg: #212529;
   --muted-fg: #6c757d;
-  --bg: #f6f7f8;
+
+  --bg: #ced4da;
   --card-bg: #ffffff;
-  --border: #ced4da;
-  --accent: #28a745;
+  --border: #dee2e6;
+
+  --accent: #007bff;
+  --accent-dark: #0d47a1;
   --accent-contrast: #ffffff;
 
   --danger: #dc3545;
 
-  /* Shape */
   --r-sm: 8px;
   --r-md: 10px;
   --r-lg: 12px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(52, 58, 64, 0.08);
-  --shadow-md: 0 10px 28px rgba(52, 58, 64, 0.12);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.10);
 
-  /* Slider height */
   --slider-h: 540px;
 }
 
@@ -73,12 +71,33 @@ body {
   color: var(--fg);
 }
 
-/* Typography scale */
-h1 { font-size: 36px; line-height: 1.15; margin: 0 0 12px; font-weight: 700; }
-h2 { font-size: 24px; line-height: 1.2;  margin: 0 0 10px; font-weight: 600; }
-h3 { font-size: 18px; line-height: 1.25; margin: 0 0 8px;  font-weight: 600; }
+/* Typography */
 
-small, .small { font-size: 12px; font-weight: 300; }
+h1 {
+  font-size: 36px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+
+small, .small {
+  font-size: 12px;
+  font-weight: 300;
+}
 
 a { color: inherit; }
 
@@ -91,7 +110,10 @@ a { color: inherit; }
 .grid { display: grid; gap: 16px; }
 @media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
 
-/* Base UI */
+/* =========================
+   Base UI
+   ========================= */
+
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -112,7 +134,7 @@ a { color: inherit; }
 
 label {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--muted-fg);
 }
 
@@ -123,22 +145,24 @@ input, textarea, select {
   background: #fff;
   color: var(--fg);
   outline: none;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-size: 16px;
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: color-mix(in srgb, var(--accent) 65%, var(--border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.18);
 }
 
 .err {
   color: var(--danger);
   font-size: 14px;
-  font-weight: 400;
 }
 
-/* Buttons */
+/* =========================
+   Buttons
+   ========================= */
+
 .btn {
   border: 0;
   border-radius: var(--r-md);
@@ -146,27 +170,20 @@ input:focus, textarea:focus, select:focus {
   cursor: pointer;
   background: var(--accent);
   color: var(--accent-contrast);
-  font-weight: 600;
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.18);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  font-weight: 500;
+  box-shadow: 0 6px 16px rgba(0,123,255,0.25);
+  transition: all 0.15s ease;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(40, 167, 69, 0.22);
-  filter: brightness(1.02);
-}
-
-.btn:active {
-  transform: translateY(0px);
-  filter: brightness(0.98);
+  background: var(--accent-dark);
+  box-shadow: 0 8px 20px rgba(13,71,161,0.30);
 }
 
 .btn.secondary {
-  background: #e9ecef;
+  background: var(--border);
   color: var(--fg);
   box-shadow: none;
-  border: 1px solid var(--border);
 }
 
 /* =========================
@@ -177,8 +194,7 @@ input:focus, textarea:focus, select:focus {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
+  background: #ffffff;
   border-bottom: 1px solid var(--border);
 }
 
@@ -189,40 +205,31 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
 }
-
-.topbar-spacer { height: 12px; }
 
 .brand {
   cursor: pointer;
   font-weight: 700;
-  color: var(--fg);
+  color: var(--accent-dark);
 }
 
-.nav { display: flex; gap: 12px; flex-wrap: wrap; }
+.nav { display: flex; gap: 12px; }
 
 .navlink {
   text-decoration: none;
   padding: 8px 14px;
   border-radius: var(--r-md);
-  border: 1px solid transparent;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: all 0.15s ease;
+  font-weight: 500;
 }
 
 .navlink:hover {
-  background: #f1f3f5;
-  border-color: var(--border);
+  background: var(--border);
 }
 
 .navlink.active {
-  background: color-mix(in srgb, var(--accent) 14%, #ffffff);
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
-  color: #0f3d1f;
-}
-
-.navlink--admin {
-  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+  background: var(--accent);
+  color: white;
 }
 
 .right {
@@ -231,24 +238,23 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
 }
 
-.who { opacity: 0.85; color: var(--muted-fg); }
+.who { color: var(--muted-fg); }
 
 /* Links-as-buttons */
+
 .btnlink {
   text-decoration: none;
   padding: 10px 16px;
   border-radius: var(--r-md);
   background: var(--accent);
-  color: var(--accent-contrast);
-  font-weight: 600;
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.18);
+  color: white;
+  font-weight: 500;
 }
 
 .btnlink.outline {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--fg);
-  box-shadow: none;
+  border: 1px solid var(--accent);
+  color: var(--accent-dark);
 }
 
 /* =========================
@@ -261,7 +267,7 @@ input:focus, textarea:focus, select:focus {
   overflow: hidden;
   position: relative;
   height: var(--slider-h);
-  background: #f1f3f5;
+  background: var(--border);
   border-bottom: 1px solid var(--border);
   margin-bottom: 32px;
 }
@@ -282,7 +288,6 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 .shade {
@@ -291,7 +296,7 @@ input:focus, textarea:focus, select:focus {
   background: linear-gradient(
     to bottom,
     rgba(255,255,255,0.10),
-    rgba(52,58,64,0.22)
+    rgba(0,0,0,0.25)
   );
 }
 
@@ -309,14 +314,13 @@ input:focus, textarea:focus, select:focus {
   width: 12px;
   height: 12px;
   border-radius: 999px;
-  border: 1px solid rgba(52, 58, 64, 0.35);
-  background: rgba(255, 255, 255, 0.65);
-  cursor: pointer;
+  border: 1px solid var(--accent-dark);
+  background: rgba(255,255,255,0.6);
 }
 
 .dot.active {
   background: var(--accent);
-  border-color: rgba(40, 167, 69, 0.85);
+  border-color: var(--accent-dark);
 }
 
 @media (max-width: 640px) {

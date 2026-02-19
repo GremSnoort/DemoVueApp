@@ -16,10 +16,44 @@ const rateOk = ref({});
 function formatStatus(val) {
   const map = {
     new: "Новая",
-    event_scheduled: "Запланировано",
-    event_completed: "Завершено",
+    in_progress: "Идет обучение",
+    done: "Обучение завершено",
   };
-  return map[val] || val;
+  return map[val] || val || "—";
+}
+
+function formatCourseType(val) {
+  const map = {
+    qualification: "Курс повышения квалификации",
+    retraining: "Курс переподготовки",
+    labor_safety: "Курс по охране труда",
+  };
+  return map[val] || val || "—";
+}
+
+function formatPayment(val) {
+  const map = {
+    card: "Банковская карта",
+    sbp: "СБП",
+    invoice: "Счёт для юр. лица (безнал)",
+    cash: "Наличные",
+  };
+  return map[val] || val || "—";
+}
+
+function formatDateTime(val) {
+  if (!val) return "—";
+  try {
+    const d = new Date(val);
+    if (Number.isNaN(d.getTime())) return val;
+    return d.toLocaleString();
+  } catch {
+    return val;
+  }
+}
+
+function isCourseRequest(it) {
+  return it?.type === "course_request" || String(it?.type || "").includes("course");
 }
 
 async function load() {
@@ -52,7 +86,7 @@ async function sendRate(id) {
     });
 
     rateOk.value[id] = true;
-    await load(); // перезагружаем список, чтобы увидеть feedback
+    await load();
   } catch (e) {
     rateErr.value[id] = apiErrorMessage(e);
   }
@@ -76,24 +110,52 @@ onMounted(load);
       {{ error }}
     </div>
 
-    <div
-      v-if="items.length === 0 && !loading"
-      style="opacity:.8; margin-top:12px;"
-    >
+    <div v-if="items.length === 0 && !loading" style="opacity:.8; margin-top:12px;">
       Пока нет заявок.
     </div>
 
     <div class="grid" style="margin-top:12px;">
       <div v-for="it in items" :key="it.id" class="card">
+        <div class="row">
+          <div>
+            <b>
+              {{ isCourseRequest(it) ? "Заявка на обучение" : it.type }}
+            </b>
+            <div style="opacity:.8; margin-top:4px;">
+              Статус: {{ formatStatus(it.status) }}
+            </div>
+          </div>
+        </div>
 
-        <div><b>{{ it.type }}</b></div>
-        <div style="opacity:.8;">Статус: {{ formatStatus(it.status) }}</div>
+        <!-- Данные заявки -->
+        <div class="card" style="margin-top:12px;">
+          <b>Данные заявки</b>
 
-        <!-- payload -->
-        <details style="margin-top:10px;">
-          <summary style="cursor:pointer;">Данные заявки</summary>
-          <pre style="white-space: pre-wrap;">{{ it.payload }}</pre>
-        </details>
+          <div class="grid grid-2" style="margin-top:10px;">
+            <div class="field" v-if="isCourseRequest(it)">
+              <label>Вид курса</label>
+              <div>{{ formatCourseType(it.payload?.course_type) }}</div>
+            </div>
+
+            <div class="field" v-if="isCourseRequest(it)">
+              <label>Дата и время начала</label>
+              <div>{{ formatDateTime(it.payload?.start_at) }}</div>
+            </div>
+
+            <div class="field" v-if="isCourseRequest(it)">
+              <label>Способ оплаты</label>
+              <div>{{ formatPayment(it.payload?.payment_method) }}</div>
+            </div>
+
+            <!-- fallback для других типов заявок -->
+            <div class="field" v-if="!isCourseRequest(it)">
+              <label>Payload</label>
+              <div style="opacity:.8;">(тип заявки не “course_request”, показываю JSON)</div>
+              <pre style="white-space: pre-wrap; margin: 8px 0 0;">{{ it.payload }}</pre>
+            </div>
+          </div>
+
+        </div>
 
         <!-- Если уже есть feedback -->
         <div v-if="it.feedback" class="card" style="margin-top:12px;">
@@ -112,48 +174,29 @@ onMounted(load);
           <b>Оставить отзыв</b>
 
           <div class="grid grid-2" style="margin-top:10px;">
-
             <div class="field">
               <label>Оценка от 0 до 5</label>
-              <input
-                type="number"
-                min="0"
-                max="5"
-                v-model.number="rate[it.id]"
-              />
+              <input type="number" min="0" max="5" v-model.number="rate[it.id]" />
             </div>
 
             <div class="field">
               <label>Комментарий</label>
               <input v-model="comment[it.id]" />
             </div>
-
           </div>
 
-          <div
-            v-if="rateErr[it.id]"
-            class="err"
-            style="margin-top:8px;"
-          >
+          <div v-if="rateErr[it.id]" class="err" style="margin-top:8px;">
             {{ rateErr[it.id] }}
           </div>
 
-          <div
-            v-if="rateOk[it.id]"
-            style="margin-top:8px; color: #16a34a;"
-          >
+          <div v-if="rateOk[it.id]" style="margin-top:8px; color: #16a34a;">
             OK ✅
           </div>
 
-          <button
-            class="btn"
-            style="margin-top:10px;"
-            @click="sendRate(it.id)"
-          >
+          <button class="btn" style="margin-top:10px;" @click="sendRate(it.id)">
             Отправить
           </button>
         </div>
-
       </div>
     </div>
   </div>

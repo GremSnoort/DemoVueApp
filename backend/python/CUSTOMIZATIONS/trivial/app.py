@@ -73,8 +73,8 @@ def restrict_admin(claims: dict=Depends(parse_claims)) -> dict:
 def create_admin():
 
     def process(cur):
-        login = "admin"
-        pwd = "admin"
+        login = "Admin26"
+        pwd = "Demo20"
 
         cur.execute("""
             DELETE FROM users WHERE role='admin';
@@ -402,7 +402,7 @@ def api_admin_reqs_status(req_id:str, input:dict, claims=Depends(restrict_admin)
 
     status = (input.get("status") or "").strip()
 
-    if status not in ("new", "in_progress", "approved", "rejected", "done"):
+    if status not in ("new", "in_progress", "done"):
         reply_error(400, "invalid status")
 
     def process(cur):

@@ -7,24 +7,41 @@ import { http, apiErrorMessage } from "@/api/http";
 
 const router = useRouter();
 
-const type = ref("service_visit");
+const type = ref("course_request");
 
-const test1 = ref("test1");
-const test2 = ref("test2");
-const test3 = ref("test3");
+// Поля (по ТЗ)
+const courseType = ref("qualification");
+const startAt = ref("");
+const paymentMethod = ref("");
 
 const error = ref("");
 const loading = ref(false);
 
+function validate() {
+  if (!courseType.value) return "Выберите вид курса";
+  if (!startAt.value) return "Укажите дату и время начала";
+  if (!paymentMethod.value) return "Выберите способ оплаты";
+  return "";
+}
+
 async function submit() {
   error.value = "";
+  const v = validate();
+  if (v) {
+    error.value = v;
+    return;
+  }
+
   loading.value = true;
   try {
-    await http.post("/api/user/reqs/create", { type: type.value, payload: {
-      test1: test1.value,
-      test2: test2.value,
-      test3: test3.value
-    } });
+    await http.post("/api/user/reqs/create", {
+      type: type.value,
+      payload: {
+        course_type: courseType.value,
+        start_at: startAt.value, // строка из input datetime-local
+        payment_method: paymentMethod.value,
+      },
+    });
     router.push("/requests");
   } catch (e) {
     error.value = apiErrorMessage(e);
@@ -36,30 +53,40 @@ async function submit() {
 
 <template>
   <TopSlider v-if="authStore.isAuthed()" />
+
   <div class="card">
-    <h2>Создать заявку</h2>
+    <h2>Оформление заявки на курс</h2>
 
     <div v-if="error" class="err">{{ error }}</div>
 
     <div class="grid">
-
       <div class="field">
-        <label>Test1</label>
-        <input v-model="test1" placeholder="test1" />
+        <label>Вид курса</label>
+        <select v-model="courseType">
+          <option value="qualification">Курс повышения квалификации</option>
+          <option value="retraining">Курс переподготовки</option>
+          <option value="labor_safety">Курс по охране труда</option>
+        </select>
       </div>
 
       <div class="field">
-        <label>Test2</label>
-        <input v-model="test2" placeholder="test2" />
+        <label>Предпочтительное время старта занятий</label>
+        <input type="datetime-local" v-model="startAt" />
       </div>
 
       <div class="field">
-        <label>Test3</label>
-        <input v-model="test3" placeholder="test3" />
+        <label>Способ оплаты</label>
+        <select v-model="paymentMethod">
+          <option value="" disabled>— выберите способ оплаты —</option>
+          <option value="card">Банковская карта</option>
+          <option value="sbp">СБП</option>
+          <option value="invoice">Счёт для юр. лица (безнал)</option>
+          <option value="cash">Наличные</option>
+        </select>
       </div>
 
       <button class="btn" :disabled="loading" @click="submit">
-        {{ loading ? "..." : "Отправить" }}
+        {{ loading ? "..." : "Отправить заявку" }}
       </button>
     </div>
   </div>
