@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { authStore } from "@/auth/auth.store";
 
+import logo from "@/assets/vue.svg";
+
 const router = useRouter();
 const route = useRoute();
 
@@ -25,13 +27,20 @@ function isActive(path) {
     <div class="topbar__inner">
 
       <div class="left">
-        <b class="brand" @click="$router.push(isAuthed ? (isAdmin ? '/admin' : '/requests') : '/login')">
-          Учусь.РФ
-        </b>
+        <div
+          class="brand"
+          @click="$router.push(isAuthed ? (isAdmin ? '/admin' : '/requests') : '/login')"
+        >
+          <img :src="logo" alt="Логотип" class="brand-logo" />
+          <span class="brand-text">Учусь.РФ</span>
+        </div>
 
         <nav v-if="isAuthed" class="nav">
-
-          <router-link class="navlink" :class="{ active: isActive('/requests') }" to="/requests">
+          <router-link
+            class="navlink"
+            :class="{ active: isActive('/requests') }"
+            to="/requests"
+          >
             Мои заявки
           </router-link>
 
@@ -39,7 +48,8 @@ function isActive(path) {
             v-if="!isAdmin"
             class="navlink"
             :class="{ active: isActive('/requests/new') }"
-            to="/requests/new">
+            to="/requests/new"
+          >
             Создать
           </router-link>
 
@@ -51,20 +61,26 @@ function isActive(path) {
           >
             Админка
           </router-link>
-
         </nav>
-
-      </div> <!-- left -->
+      </div>
 
       <div class="right">
         <template v-if="isAuthed">
-          <span class="who">👤 {{ user?.login }} ({{ isAdmin ? "admin" : "user" }})</span>
-          <button class="btn secondary" @click="logout">Выйти</button>
+          <span class="who">
+            👤 {{ user?.login }} ({{ isAdmin ? "admin" : "user" }})
+          </span>
+          <button class="btn secondary" @click="logout">
+            Выйти
+          </button>
         </template>
 
         <template v-else>
-          <router-link class="btnlink" to="/login">Войти</router-link>
-          <router-link class="btnlink outline" to="/register">Регистрация</router-link>
+          <router-link class="btnlink" to="/login">
+            Войти
+          </router-link>
+          <router-link class="btnlink outline" to="/register">
+            Регистрация
+          </router-link>
         </template>
       </div>
     </div>
