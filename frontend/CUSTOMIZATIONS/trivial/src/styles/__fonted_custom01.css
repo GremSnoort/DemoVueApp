@@ -1,0 +1,376 @@
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter/static/Inter_28pt-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================
+   Style
+   ========================= */
+
+:root {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+
+  /* === Blue palette (TЗ) === */
+  --fg: #212529;
+  --muted-fg: #6c757d;
+
+  --accent: #007bff;
+  --accent-dark: #0d47a1;
+  --accent-contrast: #ffffff;
+
+  --danger: #dc3545;
+
+  /* Paper palette */
+  --paper-bg: #f3f1ec;      /* общий фон “бумага” */
+  --paper-2: #fbfaf7;       /* светлая бумага */
+  --paper-card: #ffffff;    /* лист */
+  --border: #dee2e6;
+  --border-soft: rgba(33,37,41,0.10);
+
+  /* Shape: paper = чуть острее */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+
+  /* Shadows: paper-like */
+  --shadow-sm: 0 1px 0 rgba(0,0,0,0.03), 0 8px 18px rgba(0,0,0,0.06);
+  --shadow-md: 0 2px 0 rgba(0,0,0,0.03), 0 18px 42px rgba(0,0,0,0.10);
+
+  --slider-h: 540px;
+}
+
+body {
+  margin: 0;
+  color: var(--fg);
+
+  /* бумажная подложка с лёгкой “текстурой” градиентами */
+  background:
+    radial-gradient(1200px 700px at 20% 0%, rgba(0,123,255,0.08), transparent 55%),
+    radial-gradient(900px 600px at 85% 10%, rgba(13,71,161,0.08), transparent 55%),
+    linear-gradient(180deg, var(--paper-2) 0%, var(--paper-bg) 100%);
+}
+
+/* Typography */
+h1 { font-size: 36px; line-height: 1.15; margin: 0 0 12px; font-weight: 700; }
+h2 { font-size: 24px; line-height: 1.2;  margin: 0 0 10px; font-weight: 500; }
+h3 { font-size: 18px; line-height: 1.25; margin: 0 0 8px;  font-weight: 500; }
+
+small, .small { font-size: 12px; font-weight: 300; }
+
+a { color: inherit; }
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.grid { display: grid; gap: 16px; }
+@media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+/* =========================
+   Base UI (Paper cards)
+   ========================= */
+
+.card {
+  background: var(--paper-card);
+  border: none;
+  border-radius: var(--r-lg);
+  padding: 20px;
+
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.03),
+    0 18px 28px -18px rgba(0,0,0,0.18);
+
+  position: relative;
+}
+
+.card .card {
+  background: transparent;
+  border: none;
+  padding: 16px 0 0 0;
+
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.04),
+    0 12px 20px -16px rgba(0,0,0,0.15);
+}
+
+.card:hover {
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.04),
+    0 22px 34px -16px rgba(0,0,0,0.22);
+  transition: box-shadow 0.2s ease;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field { display: grid; gap: 6px; }
+
+label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-fg);
+}
+
+/* Inputs: как “канцелярия” */
+input, textarea, select {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  font-size: 16px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(108,117,125,0.75);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.16);
+  background: #ffffff;
+}
+
+.err { color: var(--danger); font-size: 14px; }
+
+/* =========================
+   Buttons (Paper)
+   ========================= */
+
+.btn {
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: var(--r-md);
+  padding: 12px 18px;
+  cursor: pointer;
+  background: linear-gradient(180deg, var(--accent) 0%, #0a6be0 100%);
+  color: var(--accent-contrast);
+  font-weight: 500;
+  box-shadow: 0 10px 18px rgba(0,123,255,0.18);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(0,123,255,0.22);
+  filter: brightness(1.02);
+}
+
+.btn:active {
+  transform: translateY(0px);
+  filter: brightness(0.98);
+}
+
+.btn.secondary {
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
+
+/* =========================
+   AppHeader
+   ========================= */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  /* “лист” сверху */
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.topbar__inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar-spacer { height: 12px; }
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent-dark);
+}
+
+.brand-logo { height: 28px; width: auto; }
+.brand-text { letter-spacing: 0.3px; }
+
+.nav { display: flex; gap: 12px; }
+
+.navlink {
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  transition: all 0.15s ease;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.navlink:hover {
+  background: rgba(222,226,230,0.55);
+  border-color: rgba(222,226,230,0.9);
+}
+
+.navlink.active {
+  background: linear-gradient(180deg, var(--accent) 0%, #0a6be0 100%);
+  color: white;
+  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 10px 18px rgba(0,123,255,0.18);
+}
+
+.right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.who { color: var(--muted-fg); }
+
+/* Links-as-buttons */
+.btnlink {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, var(--accent) 0%, #0a6be0 100%);
+  color: white;
+  font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 10px 18px rgba(0,123,255,0.18);
+}
+
+.btnlink.outline {
+  background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+  border: 1px solid var(--border);
+  color: var(--accent-dark);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
+
+/* =========================
+   TopSlider
+   ========================= */
+
+.slider {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  position: relative;
+  height: var(--slider-h);
+  background: #e9ecef;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+  box-shadow: 0 16px 34px rgba(0,0,0,0.08);
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  transition: transform 450ms ease;
+}
+
+.slide {
+  flex: 0 0 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.08),
+    rgba(0,0,0,0.25)
+  );
+}
+
+.dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(33,37,41,0.25);
+  background: rgba(255,255,255,0.65);
+}
+
+.dot.active {
+  background: var(--accent);
+  border-color: rgba(13,71,161,0.55);
+}
+
+@media (max-width: 640px) {
+  :root { --slider-h: 200px; }
+}
