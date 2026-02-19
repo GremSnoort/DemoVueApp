@@ -52,13 +52,12 @@
   --danger: #dc3545;
 
   /* Paper palette */
-  --paper-bg: #f3f1ec;      /* общий фон “бумага” */
-  --paper-2: #fbfaf7;       /* светлая бумага */
-  --paper-card: #ffffff;    /* лист */
+  --paper-bg: #f3f1ec;
+  --paper-2: #fbfaf7;
+  --paper-card: #ffffff;
   --border: #dee2e6;
   --border-soft: rgba(33,37,41,0.10);
 
-  /* Shape: paper = чуть острее */
   --r-sm: 6px;
   --r-md: 8px;
   --r-lg: 10px;
@@ -74,7 +73,6 @@ body {
   margin: 0;
   color: var(--fg);
 
-  /* бумажная подложка с лёгкой “текстурой” градиентами */
   background:
     radial-gradient(1200px 700px at 20% 0%, rgba(0,123,255,0.08), transparent 55%),
     radial-gradient(900px 600px at 85% 10%, rgba(13,71,161,0.08), transparent 55%),
@@ -149,7 +147,6 @@ label {
   color: var(--muted-fg);
 }
 
-/* Inputs: как “канцелярия” */
 input, textarea, select {
   padding: 12px 14px;
   border-radius: var(--r-md);
