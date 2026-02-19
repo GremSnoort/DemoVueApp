@@ -20,7 +20,6 @@ function isBanquetBooking(it) {
   return it?.type === "banquet_hall_booking";
 }
 
-// максимально безопасно достаем поля из payload (на случай старых/разных форматов)
 function getRoomType(payload) {
   return payload?.room_type ?? payload?.room ?? payload?.place_type ?? null;
 }
@@ -91,63 +90,62 @@ onMounted(load);
 
     <div class="grid" style="margin-top: 12px;">
       <div v-for="it in items" :key="it.id" class="card">
+        <!-- Header заявки -->
         <div class="row">
           <div>
-            <b>
-              {{ isBanquetBooking(it) ? "Бронирование зала для банкета" : it.type }}
-            </b>
-            <div style="opacity: 0.8;">
-              Пользователь: {{ it.user_login }} ({{ it.user_id }})
-            </div>
-            <div style="opacity: 0.8;">
-              Статус: {{ formatStatus(it.status) }}
-            </div>
+            <b>{{ isBanquetBooking(it) ? "Бронирование зала для банкета" : it.type }}</b>
+            <div style="opacity: 0.8;">Пользователь: {{ it.user_login }} ({{ it.user_id }})</div>
+            <div style="opacity: 0.8;">Статус: {{ formatStatus(it.status) }}</div>
           </div>
         </div>
 
-        <!-- Детали заявки -->
-        <div class="card" style="margin-top: 12px; background: #f8fafc;">
-          <b>Детали заявки</b>
+        <!-- Wide row: Детали + Отзыв -->
+        <div class="admin-wide-row" style="margin-top: 12px;">
+          <!-- Детали заявки -->
+          <div class="card admin-panel admin-panel--details">
+            <b>Детали заявки</b>
 
-          <div class="grid grid-2" style="margin-top: 10px;">
-            <template v-if="isBanquetBooking(it)">
-              <div class="field">
-                <label>Вид помещения</label>
-                <div>{{ formatRoomType(getRoomType(it.payload)) }}</div>
+            <div class="grid grid-2 admin-details-grid" style="margin-top: 10px;">
+              <template v-if="isBanquetBooking(it)">
+                <div class="field">
+                  <label>Вид помещения</label>
+                  <div>{{ formatRoomType(getRoomType(it.payload)) }}</div>
+                </div>
+
+                <div class="field">
+                  <label>Дата и время начала</label>
+                  <div>{{ formatDate(getStartDate(it.payload)) }}</div>
+                </div>
+
+                <div class="field">
+                  <label>Способ оплаты</label>
+                  <div>{{ formatPaymentMethod(getPayment(it.payload)) }}</div>
+                </div>
+              </template>
+
+              <div class="field" v-else>
+                <label>Payload</label>
+                <div style="opacity: 0.8;">(неизвестный тип заявки, показываю JSON)</div>
+                <pre style="white-space: pre-wrap; margin: 8px 0 0;">{{ prettyPayload(it.payload) }}</pre>
               </div>
-
-              <div class="field">
-                <label>Дата и время начала</label>
-                <div>{{ formatDate(getStartDate(it.payload)) }}</div>
-              </div>
-
-              <div class="field">
-                <label>Способ оплаты</label>
-                <div>{{ formatPaymentMethod(getPayment(it.payload)) }}</div>
-              </div>
-            </template>
-
-            <!-- fallback для других типов -->
-            <div class="field" v-else>
-              <label>Payload</label>
-              <div style="opacity: 0.8;">(неизвестный тип заявки, показываю JSON)</div>
-              <pre style="white-space: pre-wrap; margin: 8px 0 0;">
-{{ prettyPayload(it.payload) }}
-              </pre>
             </div>
           </div>
-        </div>
 
-        <!-- Отзыв -->
-        <div v-if="it.feedback" class="card" style="margin-top: 12px; background: #fff7ed;">
-          <b>Отзыв пользователя</b>
+          <!-- Отзыв (в одной колонке рядом) -->
+          <div class="card admin-panel admin-panel--feedback">
+            <b>Отзыв пользователя</b>
 
-          <div style="margin-top: 10px;">
-            <div><b>Оценка:</b> ⭐ {{ it.feedback.rating }} / 5</div>
+            <div v-if="it.feedback" style="margin-top: 10px;">
+              <div><b>Оценка:</b> ⭐ {{ it.feedback.rating }} / 5</div>
 
-            <div style="margin-top: 8px;">
-              <b>Комментарий:</b>
-              <div style="opacity: 0.9;">{{ it.feedback.comment || "—" }}</div>
+              <div style="margin-top: 8px;">
+                <b>Комментарий:</b>
+                <div class="admin-comment">{{ it.feedback.comment || "—" }}</div>
+              </div>
+            </div>
+
+            <div v-else style="margin-top: 10px; opacity: 0.8;">
+              Отзыва пока нет.
             </div>
           </div>
         </div>
@@ -179,3 +177,42 @@ onMounted(load);
     </div>
   </div>
 </template>
+
+<style scoped>
+.admin-wide-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .admin-wide-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-panel {
+  padding: 16px;
+  border-radius: var(--r-lg);
+}
+
+.admin-panel--details {
+  background: rgba(254, 237, 208, 0.55); /* кремовый полупрозрачный */
+}
+
+.admin-panel--feedback {
+  background: rgba(255, 218, 185, 0.55); /* розово-золотистый полупрозрачный */
+}
+
+.admin-details-grid {
+  gap: 12px;
+}
+
+.admin-comment {
+  opacity: 0.9;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 4px;
+}
+</style>
