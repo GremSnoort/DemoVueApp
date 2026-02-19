@@ -3,6 +3,12 @@ import { onMounted, ref } from "vue";
 import TopSlider from "@/components/TopSlider.vue";
 import { authStore } from "@/auth/auth.store";
 import { http, apiErrorMessage } from "@/api/http";
+import {
+  formatStatus,
+  formatCourse,
+  formatPayment,
+  formatDate
+} from "@/utils/formatters";
 
 const items = ref([]);
 const error = ref("");
@@ -12,45 +18,6 @@ const rate = ref({});
 const comment = ref({});
 const rateErr = ref({});
 const rateOk = ref({});
-
-function formatStatus(val) {
-  const map = {
-    new: "Новая",
-    in_progress: "Идет обучение",
-    done: "Обучение завершено",
-  };
-  return map[val] || val || "—";
-}
-
-function formatCourseType(val) {
-  const map = {
-    qualification: "Курс повышения квалификации",
-    retraining: "Курс переподготовки",
-    labor_safety: "Курс по охране труда",
-  };
-  return map[val] || val || "—";
-}
-
-function formatPayment(val) {
-  const map = {
-    card: "Банковская карта",
-    sbp: "СБП",
-    invoice: "Счёт для юр. лица (безнал)",
-    cash: "Наличные",
-  };
-  return map[val] || val || "—";
-}
-
-function formatDateTime(val) {
-  if (!val) return "—";
-  try {
-    const d = new Date(val);
-    if (Number.isNaN(d.getTime())) return val;
-    return d.toLocaleString();
-  } catch {
-    return val;
-  }
-}
 
 function isCourseRequest(it) {
   return it?.type === "course_request" || String(it?.type || "").includes("course");
@@ -134,12 +101,12 @@ onMounted(load);
           <div class="grid grid-2" style="margin-top:10px;">
             <div class="field" v-if="isCourseRequest(it)">
               <label>Вид курса</label>
-              <div>{{ formatCourseType(it.payload?.course_type) }}</div>
+              <div>{{ formatCourse(it.payload?.course_type) }}</div>
             </div>
 
             <div class="field" v-if="isCourseRequest(it)">
               <label>Дата и время начала</label>
-              <div>{{ formatDateTime(it.payload?.start_at) }}</div>
+              <div>{{ formatDate(it.payload?.start_at) }}</div>
             </div>
 
             <div class="field" v-if="isCourseRequest(it)">
