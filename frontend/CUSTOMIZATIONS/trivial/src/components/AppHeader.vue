@@ -26,7 +26,7 @@ function isActive(path) {
 
       <div class="left">
         <b class="brand" @click="$router.push(isAuthed ? (isAdmin ? '/admin' : '/requests') : '/login')">
-          DemoVueApp
+          Учусь.РФ
         </b>
 
         <nav v-if="isAuthed" class="nav">
